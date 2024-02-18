@@ -9,7 +9,16 @@ import os
 
 @task
 def do_pack():
-    # Create the versions directory if it doesn't exist
+    """
+    Generates a .tgz archive from the contents of the web_static folder.
+
+    All files in the folder web_static are added to the final archive.
+    All archives are stored in the folder versions (this function creates the folder if it doesn’t exist).
+    The name of the archive created is web_static_<year><month><day><hour><minute><second>.tgz.
+    
+    Returns:
+        str: The path of the generated archive if successful, otherwise None.
+    """
     if not os.path.exists("versions"):
         os.makedirs("versions")
 
