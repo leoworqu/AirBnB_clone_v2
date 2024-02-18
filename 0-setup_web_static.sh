@@ -18,6 +18,6 @@ sudo ln -s -f /data/web_static/releases/test/ /data/web_static/current
 
 sudo chown -R ubuntu:ubuntu /data/
 
-sudo sed -i '/index index.html;/a \n \ \ location /hbnb_static {\n \ \ \ alias /data/web_static/current/;}\n' "$location"
+sudo sed -i '/index index.html;/a \\n \ \ location /hbnb_static {\n \ \ \ alias /data/web_static/current/;}\n' "$location"
 
 sudo service nginx restart
