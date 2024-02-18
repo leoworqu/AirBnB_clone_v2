@@ -1,16 +1,12 @@
 #!/usr/bin/env bash
 #a Bash script that sets up your web servers for the deployment of web_static
-
-sudo apt update
-sudo apt install nginx
-sudo ufw allow 'Nginx HTTP'
-
-sudo mkdir /data/
-sudo mkdir /data/web_static/
-sudo mkdir /data/web_static/releases/
-sudo mkdir /data/web_static/shared/
-sudo mkdir /data/web_static/releases/test/
-
+sudo apt-get -y update
+sudo apt-get -y install nginx
+sudo mkdir -p /data/
+sudo mkdir -p /data/web_static/
+sudo mkdir -p /data/web_static/releases/
+sudo mkdir -p /data/web_static/shared/
+sudo mkdir -p /data/web_static/releases/test/
 sudo echo -e "<html>
 <head>
   </head>
@@ -18,11 +14,9 @@ sudo echo -e "<html>
     Holberton School
   </body>
 </html>" | sudo tee /data/web_static/releases/test/index.html
-
-sudo ln -s -f /data/web_static/releases/test/ /data/web_static/current
-
+sudo ln -sf /data/web_static/releases/test/ /data/web_static/current
 sudo chown -R ubuntu:ubuntu /data/
-
-sudo sed -i '/listen 80 default_server/a location /hbnb_static { alias /data/web_static/current/;}' /etc/nginx/sites-enabled/default
-
+file=/etc/nginx/sites-available/default
+phrase="location /hbnb_static/{\n\talias /data/web_static/current/;\n}\n"
+sudo sed -i "27i $phrase" $file
 sudo service nginx restart
