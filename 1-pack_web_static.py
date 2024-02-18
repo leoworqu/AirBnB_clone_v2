@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+
 """
 Fabric script to genereate tgz archive
 execute: fab -f 1-pack_web_static.py do_pack
@@ -22,15 +23,14 @@ def do_pack():
     Returns:
         str: The path of the generated archive if successful, otherwise None.
     """
+
     if not os.path.exists("versions"):
         os.makedirs("versions")
 
-    # Generate the filename for the archive
     timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
     archive_name = f"web_static_{timestamp}.tgz"
     archive_path = os.path.join("versions", archive_name)
 
-    # Create the .tgz archive
     with lcd("web_static"):
         result = local("tar -cvzf {} .".format(archive_path), capture=True)
         if result.succeeded:
