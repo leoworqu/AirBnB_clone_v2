@@ -14,30 +14,22 @@ def do_deploy(archive_path):
     if not os.path.exists(archive_path):
         print(f"Archive file '{archive_path}' does not exist.")
         return False
-
     archive_filename = os.path.basename(archive_path)
     archive_name = os.path.splitext(archive_filename)[0]
-
     try:
         # Upload the archive to /tmp/ directory on web servers
         put(archive_path, '/tmp/')
-
         # Create the directory /data/web_static/releases/<archive_name>
         run(f'mkdir -p /data/web_static/releases/{archive_name}')
-
         # Uncompress the archive to /data/web_static/releases/<archive_name>
         with cd('/data/web_static/releases/'):
             run(f'tar -xzf /tmp/{archive_filename} -C {archive_name}')
-
         # Delete the archive from the web servers
         run(f'rm /tmp/{archive_filename}')
-
         # Remove the symbolic link /data/web_static/current
         run('rm -f /data/web_static/current')
-
         # Create a new symbolic link /data/web_static/current
         run(f'ln -s /data/web_static/releases/{archive_name} /data/web_static/current')
-
         print("New version deployed successfully.")
         return True
     except Exception as e:
