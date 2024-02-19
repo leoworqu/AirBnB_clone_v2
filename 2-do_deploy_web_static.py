@@ -18,10 +18,6 @@ env.hosts = web_servers
 def do_deploy(archive_path):
     """
     Distributes an archive to web servers and deploys it.
-    Args:
-        archive_path (str): Path to the archive to be deployed.
-    Returns:
-        bool: True if all operations are successful, False otherwise.
     """
     # Check if the archive file exists
     if not os.path.exists(archive_path):
