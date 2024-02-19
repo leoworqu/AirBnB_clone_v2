@@ -11,11 +11,8 @@ import os
 
 def do_deploy(archive_path):
     """distributes an archive to the web servers"""
-    if not os.path.exists(archive_path):
-        print(f"Archive file '{archive_path}' does not exist.")
-        return False
-    archive_filename = os.path.basename(archive_path)
-    archive_name = os.path.splitext(archive_filename)[0]
+    if exists(archive_path) is False:
+        return Falsr
     try:
         put(archive_path, '/tmp/')
         run(f'mkdir -p /data/web_static/releases/{archive_name}')
