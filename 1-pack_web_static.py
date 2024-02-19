@@ -12,12 +12,8 @@ def do_pack():
     """
     making an archive on web_static folder
     """
+    local('sudo mkdir -p versions')
+    t = datetime.now()
+    time = t.strftime("%Y%m%d%H%M%S")
 
-    time = datetime.now()
-    archive = 'web_static_' + time.strftime("%Y%m%d%H%M%S") + '.' + 'tgz'
-    local('mkdir -p versions')
-    create = local('tar -cvzf versions/{} web_static'.format(archive))
-    if create is not None:
-        return archive
-    else:
-        return None
+    create = local(f'sudo tar -cvzf versions/web_static_{time}.tgz web_static')
