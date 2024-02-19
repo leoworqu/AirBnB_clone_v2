@@ -3,28 +3,59 @@
 Fabric script based on the file 1-pack_web_static.py that distributes an
 archive to the web servers
 """
+from fabric import task, env
+from fabric.context_managers import cd
+from fabric.operations import put, run
+import os
 
-from fabric.api import put, run, env
-from os.path import exists
-env.hosts = ['54.90.31.96', '100.26.156.63']
+# Define the web server IPs
+web_servers = ['<IP web-01>', '<IP web-02>']
 
+# Set the hosts using env.hosts
+env.hosts = web_servers
 
+@task
 def do_deploy(archive_path):
-    """distributes an archive to the web servers"""
-    if exists(archive_path) is False:
+    """
+    Distributes an archive to web servers and deploys it.
+
+    Args:
+        archive_path (str): Path to the archive to be deployed.
+
+    Returns:
+        bool: True if all operations are successful, False otherwise.
+    """
+    # Check if the archive file exists
+    if not os.path.exists(archive_path):
+        print(f"Archive file '{archive_path}' does not exist.")
         return False
+
+    # Extract the archive filename without extension
+    archive_filename = os.path.basename(archive_path)
+    archive_name = os.path.splitext(archive_filename)[0]
+
     try:
-        file_n = archive_path.split("/")[-1]
-        no_ext = file_n.split(".")[0]
-        path = "/data/web_static/releases/"
+        # Upload the archive to /tmp/ directory on web servers
         put(archive_path, '/tmp/')
-        run('mkdir -p {}{}/'.format(path, no_ext))
-        run('tar -xzf /tmp/{} -C {}{}/'.format(file_n, path, no_ext))
-        run('rm /tmp/{}'.format(file_n))
-        run('mv {0}{1}/web_static/* {0}{1}/'.format(path, no_ext))
-        run('rm -rf {}{}/web_static'.format(path, no_ext))
-        run('rm -rf /data/web_static/current')
-        run('ln -s {}{}/ /data/web_static/current'.format(path, no_ext))
+
+        # Create the directory /data/web_static/releases/<archive_name>
+        run(f'mkdir -p /data/web_static/releases/{archive_name}')
+
+        # Uncompress the archive to /data/web_static/releases/<archive_name>
+        with cd('/data/web_static/releases/'):
+            run(f'tar -xzf /tmp/{archive_filename} -C {archive_name}')
+
+        # Delete the archive from the web servers
+        run(f'rm /tmp/{archive_filename}')
+
+        # Remove the symbolic link /data/web_static/current
+        run('rm -f /data/web_static/current')
+
+        # Create a new symbolic link /data/web_static/current
+        run(f'ln -s /data/web_static/releases/{archive_name} /data/web_static/current')
+
+        print("New version deployed successfully.")
         return True
-    except:
+    except Exception as e:
+        print(f"Deployment failed: {e}")
         return False
