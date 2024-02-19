@@ -4,25 +4,27 @@ Fabric script based on the file 1-pack_web_static.py that distributes an
 archive to the web servers
 """
 
-from fabric import task, env
-from fabric.context_managers import cd
-from fabric.operations import put, run
-import os
+from fabric.api import put, run, env
+from os.path import exists
+env.hosts = ['54.90.31.96', '100.26.156.63']
+
 
 def do_deploy(archive_path):
     """distributes an archive to the web servers"""
     if exists(archive_path) is False:
-        return Falsr
+        return False
     try:
+        file_n = archive_path.split("/")[-1]
+        no_ext = file_n.split(".")[0]
+        path = "/data/web_static/releases/"
         put(archive_path, '/tmp/')
-        run(f'mkdir -p /data/web_static/releases/{archive_name}')
-        with cd('/data/web_static/releases/'):
-            run(f'tar -xzf /tmp/{archive_filename} -C {archive_name}')
-        run(f'rm /tmp/{archive_filename}')
-        run('rm -f /data/web_static/current')
-        run(f'ln -s /data/web_static/releases/{archive_name} /data/web_static/current')
-        print("New version deployed successfully.")
+        run('sudo mkdir -p {}{}/'.format(path, no_ext))
+        run('sudo tar -xvzf /tmp/{} -C {}{}/'.format(file_n, path, no_ext))
+        run('sudo rm /tmp/{}'.format(file_n))
+        run('sudo mv {0}{1}/web_static/* {0}{1}/'.format(path, no_ext))
+        run('sudo rm -rf {}{}/web_static'.format(path, no_ext))
+        run('sudo rm -rf /data/web_static/current')
+        run('sudo ln -s {}{}/ /data/web_static/current'.format(path, no_ext))
         return True
-    except Exception as e:
-        print(f"Deployment failed: {e}")
+    except:
         return False
