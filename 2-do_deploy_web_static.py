@@ -16,8 +16,8 @@ env.hosts = web_servers
 
 @task
 def do_deploy(archive_path):
-    """gistributes an archive to web servers and deploys it."""
-    # Check if the archive file exists
+    """distributes an archive to web servers and deploys it."""
+
     if not os.path.exists(archive_path):
         print(f"Archive file '{archive_path}' does not exist.")
         return False
