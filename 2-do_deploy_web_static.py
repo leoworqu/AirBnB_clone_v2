@@ -11,9 +11,13 @@ env.hosts = ['54.90.31.96', '100.26.156.63']
 
 def do_deploy(archive_path):
     """distributes an archive to the web servers"""
-    if exists(archive_path) is False:
+    if not exists(archive_path):
+        print("Archive {} does not exist.".format(archive_path))
         return False
+
     try:
+        print("Deploying {}...".format(archive_path))
+
         file_n = archive_path.split("/")[-1]
         no_ext = file_n.split(".")[0]
         path = "/data/web_static/releases/"
