@@ -4,7 +4,7 @@ Flask web application with routes for displaying messages.
 """
 
 
-from flask import Flask, escape
+from flask import Flask
 
 app = Flask(__name__)
 
