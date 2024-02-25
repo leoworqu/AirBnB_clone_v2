@@ -4,7 +4,7 @@ Flask web application with routes for displaying messages.
 """
 
 
-from flask import Flask
+from flask import Flask, render_template
 
 app = Flask(__name__)
 
