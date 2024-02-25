@@ -13,6 +13,7 @@ Routes:
 The option strict_slashes=False is used in route definitions.
 """
 
+
 from flask import Flask, escape
 
 app = Flask(__name__)
