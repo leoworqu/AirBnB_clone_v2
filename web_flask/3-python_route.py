@@ -21,12 +21,12 @@ def hbnb():
 @app.route('/c/<text>', strict_slashes=False)
 def c_text(text):
     """Route to display 'C ' followed by the value of the text variable."""
-    return 'C {}'.format(escape(text).replace('_', ' '))
+    return 'C ' + text.replace('_', ' ')
 
 @app.route('/python/<text>', strict_slashes=False)
 def python_text(text='is_cool'):
     """Route to display 'Python ' followed by the value of the text variable."""
-    return 'Python {}'.format(escape(text).replace('_', ' '))
+    return 'Python ' + text.replace('_', ' ')
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
